@@ -1,0 +1,103 @@
+# Project: tstl2cl
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe -D__DEBUG__ -Wall
+CC   = gcc.exe -D__DEBUG__ -Wall
+WINDRES = windres.exe
+RES  = 
+OBJ  = c_list.o c_memory.o test/t_list.o c_algo.o c_function.o c_vector.o test/t_vector.o \
+       c_pair.o test/t_main.o c_tree.o test/t_tree.o c_map.o c_set.o test/t_map.o test/t_set.o \
+       test/t_stack.o c_stack.o test/t_queue.o c_queue.o c_iterator.o test/t_algo.o $(RES)
+LINKOBJ  = c_list.o c_memory.o test/t_list.o c_algo.o c_function.o c_vector.o test/t_vector.o \
+	   c_pair.o test/t_main.o c_tree.o test/t_tree.o c_map.o c_set.o test/t_map.o test/t_set.o \
+	   test/t_stack.o c_stack.o test/t_queue.o c_queue.o c_iterator.o test/t_algo.o $(RES)
+LIBOBJ = c_list.o c_memory.o c_algo.o c_function.o c_vector.o \
+       c_pair.o c_tree.o c_map.o c_set.o \
+       c_stack.o c_queue.o c_iterator.o 
+
+LIBS = -g3 
+INCS = -I"./include"  -I"./"  
+CXXINCS = -I"./include" -I"./"  
+BIN  = tstl2cl.exe
+LIBBIN = libtstl2cl.a
+CXXFLAGS = $(CXXINCS)   -g3
+CFLAGS = $(INCS)   -g3
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom lib
+
+all: all-before tstl2cl.exe all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CC) $(LINKOBJ) -o "tstl2cl.exe" $(LIBS)
+
+c_list.o: c_list.c
+	$(CC) -c c_list.c -o c_list.o $(CFLAGS)
+
+c_memory.o: c_memory.c
+	$(CC) -c c_memory.c -o c_memory.o $(CFLAGS)
+
+test/t_list.o: test/t_list.c
+	$(CC) -c test/t_list.c -o test/t_list.o $(CFLAGS)
+
+c_algo.o: c_algo.c
+	$(CC) -c c_algo.c -o c_algo.o $(CFLAGS)
+
+c_function.o: c_function.c
+	$(CC) -c c_function.c -o c_function.o $(CFLAGS)
+
+c_vector.o: c_vector.c
+	$(CC) -c c_vector.c -o c_vector.o $(CFLAGS)
+
+test/t_vector.o: test/t_vector.c
+	$(CC) -c test/t_vector.c -o test/t_vector.o $(CFLAGS)
+
+c_pair.o: c_pair.c
+	$(CC) -c c_pair.c -o c_pair.o $(CFLAGS)
+
+test/t_main.o: test/t_main.c
+	$(CC) -c test/t_main.c -o test/t_main.o $(CFLAGS)
+
+c_tree.o: c_tree.c
+	$(CC) -c c_tree.c -o c_tree.o $(CFLAGS)
+
+test/t_tree.o: test/t_tree.c
+	$(CC) -c test/t_tree.c -o test/t_tree.o $(CFLAGS)
+
+c_map.o: c_map.c
+	$(CC) -c c_map.c -o c_map.o $(CFLAGS)
+
+c_set.o: c_set.c
+	$(CC) -c c_set.c -o c_set.o $(CFLAGS)
+
+test/t_map.o: test/t_map.c
+	$(CC) -c test/t_map.c -o test/t_map.o $(CFLAGS)
+
+test/t_set.o: test/t_set.c
+	$(CC) -c test/t_set.c -o test/t_set.o $(CFLAGS)
+
+c_stack.o: c_stack.c
+	$(CC) -c c_stack.c -o c_stack.o $(CFLAGS)
+
+test/t_stack.o: test/t_stack.c
+	$(CC) -c test/t_stack.c -o test/t_stack.o $(CFLAGS)
+
+c_queue.o: c_queue.c
+	$(CC) -c c_queue.c -o c_queue.o $(CFLAGS)
+
+test/t_queue.o: test/t_queue.c
+	$(CC) -c test/t_queue.c -o test/t_queue.o $(CFLAGS)
+
+c_iterator.o: c_iterator.c
+	$(CC) -c c_iterator.c -o c_iterator.o $(CFLAGS)
+
+t_algo.o: test/t_algo.c
+	$(CC) -c test/t_algo.c -o test/t_algo.o $(CFLAGS)
+
+lib: $(LIBOBJ)	
+	ar r $(LIBBIN) $(LIBOBJ)
+	ranlib $(LIBBIN)
