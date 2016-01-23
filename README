@@ -1,0 +1,32 @@
+README for "Translate STL 2 CL" library 1.0
+The project could be found at http://sourceforge.net/projects/tstl2cl, using 'tstl2cl' for short in the following text.
+
+LICENSE
+'tstl2cl' has been distributing under the zlib/libpng license, you should have already received license.txt in this folder.
+For more information about free software, you could browse http://www.opensource.org/
+
+WHAT IS THIS
+This directory holds a library for using standard vector list map set stack queue etc in a pure C environment.
+All those of concepts in tstl2cl are inspired by STL. You could have a look at http://www.sgi.com/tech/stl/index.html 
+to know about C++ Standard Template Library i.e STL.
+
+WHEN TO USE 
+Make sure that you are working in a C environment rather than C++ or anything else before going on reading.
+If you get boring with writing basic data struct and algorithm again and agagin in C, tstl2cl would probably be the very 
+library kits for you. It will save you much of time of coding, then you could focus more on your applications' function. 
+  
+HOW TO USE
+Read documents in 'doc' folder, and many a samples could be found in 'test' folder. If you are familiar with STL, you would 
+probably find that to use this library is a snap.
+ 
+TO BUILD SAMPLES
+On linux 
+make clean all
+On cygwin
+make -f Makefile.win clean all
+You may have some problems to build this library in some minority C compiler, feel free to fix them. You could also report 
+bugs on the project's website: http://sourceforge.net/projects/tstl2cl.
+
+AUTHOR
+Wenbo Lao(Rob Lao) 
+viewpl(at)gmail.com

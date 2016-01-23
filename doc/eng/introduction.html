@@ -1,0 +1,215 @@
+<HTML VERSION="2.0">
+<HEAD>
+<TITLE>tstl2cl: Introduction</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff" LINK="#0000ee" TEXT="#000000" VLINK="#551a8b" 
+ALINK="#ff0000"> 
+<!--end header-->
+<p>
+<H3><a href="index.html">Table of Contents</a></H3>
+<hr size="6">
+
+<CENTER><H1 ALIGN="CENTER">
+Introduction to the tstl2cl</H1>
+</CENTER><P>
+The Translate tstl2cl 2 CL library, or <I>tstl2cl</I>, is a C library of 
+container classes, algorithms, and iterators; it provides many of the 
+basic algorithms and data structures of computer science. The tstl2cl is a <I>generic</I>
+library, but different from template in C++, the <I>generic</I> occurs at runtime rather than 
+interpret time like instantiation. Its components are all instances of 'Container&lt;void*&gt;' of C++</P>
+<H2>
+Containers and algorithms</H2>
+<P>
+Like many class libraries, the tstl2cl includes <I>container</I> classes: 
+classes whose purpose is to contain other objects. The tstl2cl includes the 
+classes <TT><A href="Vector.html">vector</A></TT>, <TT><A href="List.html">list</A></TT>, <!--<TT><A href="Deque.html">deque</A></TT>,--> <TT><A href="set.html">set</A></TT>, <!--<TT><A href="multiset.html">multiset</A></TT>,--> <TT><A href="Map.html">map</A></TT>, <!--<TT><A href="Multimap.html">multimap</A></TT>,--> <!--<TT><A href="hash_set.html">hash_set</A></TT>,--> <!--<TT><A href="hash_multiset.html">hash_multiset</A></TT>,--> <!--<TT><A href="hash_map.html">hash_map</A></TT>,--> 
+<!--and <TT><A href="hash_multimap.html">hash_multimap</A></TT>-->. Each of these classes can contain any type of object's pointer. </P>
+
+<P>
+The tstl2cl also includes a large collection of <I>algorithms</I> that 
+manipulate the data stored in containers. You can reverse the order of 
+elements in a <TT>vector</TT>, for example, by using the <TT><A href="reverse.html">reverse</A></TT>
+ algorithm. </P>
+<PRE>
+      c_reverse(c_vector_begin(&v), c_vector_end(&v)); 
+</PRE>
+<P>
+There are two important points to notice about this call to <TT>reverse</TT>. 
+First, it is a global function. Second, it takes 
+two arguments rather than one: it operates on a <I>range</I> of 
+elements, rather than on a container. In this particular case the range 
+happens to be the entire container <TT>v.</TT></P>
+<P>
+The reason for both of these facts is the same: <TT>reverse</TT>, like 
+other algorithms, is decoupled from the tstl2cl container classes. This 
+means that <TT>reverse</TT> can be used not only to reverse elements in 
+vectors, but also to reverse elements in lists, and even elements in C 
+arrays. But tstl2cl assumes that the size of a C array's element must be 
+same as sizeof(void**). That means you will probably have to arrange your 
+data into a point array before you use this feature.
+The following program is a simple example. 
+</P>
+<PRE>
+      double A[6] = { 1.2, 1.3, 1.4, 1.5, 1.6, 1.7 };
+      double * B[6] = { &A[0], &A[1], &A[2], &A[3], &A[4], &A[5] };
+      c_reverse(c_get_array_iterator(&B[0]), c_get_array_iterator(&B[6]));
+      for (int i = 0; i &lt; 6; ++i)
+        printf("%f\t", *B[i]);
+</PRE>
+<P>
+This example uses a <I>range</I>, just like the example of reversing a <TT>vector</TT>: 
+the first argument to reverse is a pointer to the beginning of the 
+range, and the second argument points one element past the end of the 
+range. This range is denoted <TT>[A, A + 6)</TT>; the asymmetrical 
+notation is a reminder that the two endpoints are different, that the 
+first is the beginning of the range and the second is <I>one past</I>
+ the end of the range. </P>
+<H2>
+Iterators</H2>
+
+<P>
+Iterators are the mechanism that makes it possible to decouple 
+algorithms from containers: algorithms are templates, and are 
+parameterized by the type of iterator, so they are not restricted to a 
+single type of container. Consider, for example, how to write an 
+algorithm that performs linear search through a range. This is the 
+tstl2cl's <TT><A href="find.html">find</A></TT> algorithm. </P>
+<PRE>
+      c_iterator c_find(c_iterator first, c_iterator last, const value_type val) {
+		while(!ITER_EQUAL(first, last) && !(ITER_REF(first) == val))
+			ITER_INC(first);
+		return first;
+	}
+</PRE>
+<P>
+<TT>Find</TT> takes three arguments: two iterators that define a range, 
+and a value to search for in that range. It examines each iterator in 
+the range <TT>[first, last)</TT>, proceeding from the beginning 
+to the end, and stops either when it finds an iterator that points to <TT>value</TT>
+ or when it reaches the end of the range. </P>
+<P>
+<TT>First</TT> and <TT>last</TT> are declared to be of type <TT>c_iterator</TT>, 
+and <TT>c_iterator</TT> is a generic iterator applied to any containers. If 
+the container is a int* [] c array, the first two arguments to <TT>find</TT> are of type <TT>int**</TT> and 
+the third is of type <TT>int*</TT>, then it is as if you had called the 
+following function.</P>
+<PRE>
+      int** find(int** first, int** last, const int * value) {
+          while (first != last &amp;&amp; *first != value) ++first;
+          return first;
+      }
+</PRE>
+<H2>
+Concepts and Modeling</H2>
+<TT>Find</TT> isn't the only tstl2cl algorithm that has such a set of 
+requirements; the arguments to <TT><A href="for_each.html">for_each</A></TT> and <TT><A href="count.html">count</A></TT>, 
+and other algorithms, must satisfy the same requirements. These requirements are 
+sufficiently important that we give them a name: we call such a set of 
+type requirements a <I>concept</I>, and we call this particular 
+concept <B><A href="InputIterator.html">Input Iterator</A></B>. We say that a type <I>conforms to a concept</I>, or that 
+it <I>is a model of a concept</I>, if it satisfies all of those 
+requirements.  We say that <TT>int**</TT> is a model of <B>Input 
+Iterator</B> because <TT>int**</TT> provides all of the operations that 
+are specified by the <B>Input Iterator</B> requirements. </P>
+<P>
+Concepts are not a part of the C language; there is no way to declare 
+a concept in a program, or to declare that a particular type is a model 
+of a concept. Nevertheless, concepts are an extremely important part of 
+the tstl2cl. Using concepts makes it possible to write programs that 
+cleanly separate interface from implementation: the author of <TT>find</TT>
+ only has to consider the interface specified by the concept <B>Input 
+Iterator</B>, rather than the implementation of every possible type 
+that conforms to that concept. Similarly, if you want to use <TT>find</TT>, 
+you need only to ensure that the arguments you pass to it are models 
+of <B>Input Iterator. </B>This is the reason why <TT>find</TT> and <TT>reverse</TT>
+ can be used with <TT>list</TT>s, <TT>vector</TT>s, C arrays, and many 
+other types: programming in terms of concepts, rather than in terms of 
+specific types, makes it possible to reuse software components and to 
+combine components together. </P>
+<H2>
+Refinement</H2>
+<P>
+<B>Input Iterator</B> is, in fact, a rather weak concept: that is, it 
+imposes very few requirements. An <B>Input Iterator</B> must support a 
+subset of pointer arithmetic (it must be possible to increment an <B>Input 
+Iterator</B> using the standard iterator operator macro <TT>ITER_INC</TT>), but need 
+not support all operations of pointer arithmetic. This is sufficient 
+for <TT><A href="find.html">find</A></TT>, but some other algorithms require that their 
+arguments satisfy additional requirements. <TT><A href="reverse.html">Reverse</A></TT>, for 
+example, must be able to decrement its arguments as well as increment 
+them; it uses the expression <TT>ITER_DEC</TT>. In terms of concepts, we 
+say that <TT>reverse</TT>'s arguments must be models of <B><A href="BidirectionalIterator.html">Bidirectional Iterator</A></B> 
+rather than <B>Input Iterator</B>. </P>
+<P>
+The <B>Bidirectional Iterator</B> concept is very similar to the <B>Input
+ Iterator</B> concept: it simply imposes some additional requirements. 
+The types that are models of <B>Bidirectional Iterator</B> are a subset 
+of the types that are models of<B> Input Iterator</B>: every type that 
+is a model of <B>Bidirectional Iterator</B> is also a model of <B>Input 
+Iterator</B>. <TT>Int*</TT>, for example, is both a model of <B>Bidirectional 
+Iterator</B> and a model of <B>Input Iterator</B></P>
+<P>
+We describe the relationship between <B>Input Iterator</B> and <B>Bidirectional 
+Iterator</B> by saying that <B>Bidirectional Iterator</B> is a <I>refinement</I>
+ of <B>Input Iterator</B>. Refinement of concepts is very much like 
+inheritance of C++ classes; the main reason we use a different word, 
+instead of just calling it &quot;inheritance&quot;, is to emphasize 
+that refinement applies to concepts rather than to actual types.</P>
+<P>
+There are actually three more iterator concepts in addition to the two 
+that we have already discussed:  the five iterator concepts are 
+<B><A href="OutputIterator.html">Output Iterator</A></B>, <B><A href="InputIterator.html">Input Iterator</A></B>, 
+<B><A href="ForwardIterator.html">Forward Iterator</A></B>, <B><A href="BidirectionalIterator.html">Bidirectional Iterator</A></B>, and 
+<B><A href="RandomAccessIterator.html">Random Access Iterator</A>;</B> <B>Forward Iterator</B> is a 
+refinement of <B>Input Iterator</B>, <B>Bidirectional Iterator</B> 
+is a refinement of <B>Forward Iterator</B>, and <B>Random Access Iterator</B>
+is a refinement of <B>Bidirectional Iterator</B>.   (<B><A href="OutputIterator.html">Output Iterator</A></B>
+is related to the other four concepts, but it is not part of the hierarchy
+of refinement: it is not a refinement of any of the other iterator concepts,
+and none of the other iterator concepts are refinements of it.)
+
+The <I><A href="Iterators.html">Iterator Overview</A></I> has more information about iterators 
+in general. </P>
+<P>
+Container classes, like iterators, are organized into a hierarchy of 
+concepts. All containers are models of the concept <B><A href="Container.html">Container</A></B>; 
+more refined concepts, such as <B><!--<A href="Sequence.html">-->Sequence<!--</A>--></B> and 
+<B><!--<A href="AssociativeContainer.html">-->Associative Container<!--</A>--></B>, describe specific types of containers. 
+</P>
+<H2>
+Other parts of the tstl2cl</H2>
+<P>
+If you understand algorithms, iterators, and containers, then you 
+understand almost everything there is to know about the tstl2cl. The tstl2cl 
+does, however, include several other types of components. </P>
+<P>
+First, the tstl2cl includes several  <I>utilities</I>: very basic concepts 
+and functions that are used in many different parts of the library. The 
+concept<B> <A href="Assignable.html">Assignable</A></B>, for example, describes types that have 
+assignment operators and copy constructors; almost all tstl2cl classes are 
+models of <B>Assignable</B>, and almost all tstl2cl algorithms require 
+their arguments to be models of <B>Assignable</B>. </P>
+<P>
+Second, the tstl2cl includes some low-level mechanisms for allocating and 
+deallocating memory. <I><!--<A href="Allocators.html">-->Allocators<!--</A>--></I> are very specialized, and 
+you can safely ignore them for almost all purposes. </P>
+<P>
+Finally, the tstl2cl includes a few collection of <I><A href="functors.html">function objects</A></I>, 
+also known as <I>functors</I>. Just as iterators are a generalization 
+of pointers, function objects are a generalization of functions: a 
+function object is anything that you can call using the ordinary 
+function call syntax. There are several different concepts relating to 
+function objects, including <B><A href="UnaryFunction.html">Unary Function</A></B> (a function 
+object that takes a single argument, <I>i.e.</I> one that is called as <TT>f(x)</TT>) 
+and <B><A href="BinaryFunction.html">Binary Function</A></B> (a function object that takes two 
+arguments, <I>i.e.</I> one that is called as <TT>f(x, y)</TT>). Function 
+objects are an important part of generic programming because they allow 
+abstraction not only over the types of objects, but also over the 
+operations that are being performed. </P>
+
+<!--start footer--> 
+<HR SIZE="6">
+<p>
+<H3><a href="index.html">Table of Contents</a></H3>
+</BODY>
+</HTML> 
